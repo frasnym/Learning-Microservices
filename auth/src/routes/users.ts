@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
+import { body, validationResult } from 'express-validator';
 
 const router = express.Router();
 
@@ -14,9 +14,13 @@ router
 				.withMessage('Password must be between 4 and 20 character'),
 		],
 		(req: Request, res: Response) => {
-			const { email, password } = req.body;
+			const errors = validationResult(req);
+			if (!errors.isEmpty()) {
+				return res.status(400).send(errors.array());
+			}
+			// const { email, password } = req.body;
 
-			res.send('ok signup');
+			return res.send('ok signup');
 		}
 	);
 
