@@ -9,5 +9,5 @@ app.use('/api/users', usersRouter);
 app.use(errorHandler);
 
 app.listen(3000, () => {
-	console.log('Listening on PORT 3000');
+	console.log('Listening on PORT 3000!');
 });

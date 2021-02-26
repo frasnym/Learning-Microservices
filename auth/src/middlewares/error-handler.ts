@@ -1,9 +1,23 @@
 import { ErrorRequestHandler } from 'express';
+import { DatabaseConnectionError } from '../errors/database-connection-error';
+import { RequestValidationError } from '../errors/request-validation-error';
 
 export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
-	console.error('[Err Middleware]', err);
+	if (err instanceof RequestValidationError) {
+		const formattedErrors = err.errors.map((e) => {
+			return {
+				message: e.msg,
+				field: e.param,
+			};
+		});
+		return res.status(400).send({ errors: formattedErrors });
+	}
 
-	res.status(400).send({
-		message: err.message,
+	if (err instanceof DatabaseConnectionError) {
+		return res.status(500).send({ errors: [{ message: err.reason }] });
+	}
+
+	return res.status(500).send({
+		errors: [{ message: 'Something went wrong...' }],
 	});
 };
