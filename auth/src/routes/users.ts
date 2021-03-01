@@ -80,4 +80,17 @@ router
 		}
 	);
 
+router.route('/currentuser').get(async (req: Request, res: Response) => {
+	if (!req.session?.jwt) {
+		return res.send({ currentUser: null });
+	}
+
+	try {
+		const jwtPayload = jwt.verify(req.session.jwt, process.env.JWT_KEY!);
+		return res.send({ currentUser: jwtPayload });
+	} catch (error) {
+		return res.send({ currentUser: null });
+	}
+});
+
 export { router as usersRouter };
