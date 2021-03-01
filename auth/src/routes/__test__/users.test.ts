@@ -102,4 +102,22 @@ describe('usersRouter - Sign In', () => {
 			})
 			.expect(400);
 	});
+
+	test('should responds with a cookie with valid credentials is provided', async () => {
+		const validBody = {
+			email: 'test@test.com',
+			password: 'password',
+		};
+		await request(app)
+			.post('/api/users/signup')
+			.send(validBody)
+			.expect(201);
+
+		const response = await request(app)
+			.post('/api/users/signin')
+			.send(validBody)
+			.expect(200);
+
+		expect(response.get('Set-Cookie')).toBeDefined();
+	});
 });
