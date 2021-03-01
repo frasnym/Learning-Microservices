@@ -1,5 +1,5 @@
 import React from 'react';
 
 export default function index() {
-	return <div>Landing</div>;
+	return <div>Landing2</div>;
 }
