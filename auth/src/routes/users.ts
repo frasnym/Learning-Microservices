@@ -3,6 +3,7 @@ import { body } from 'express-validator';
 import jwt from 'jsonwebtoken';
 
 import { BadRequestError } from '../errors/bad-request-error';
+import { currentUser } from '../middlewares/current-user';
 import { validateRequest } from '../middlewares/validate-request';
 import { User } from '../models/user';
 import { Password } from '../services/password';
@@ -80,18 +81,11 @@ router
 		}
 	);
 
-router.route('/currentuser').get(async (req: Request, res: Response) => {
-	if (!req.session?.jwt) {
-		return res.send({ currentUser: null });
-	}
-
-	try {
-		const jwtPayload = jwt.verify(req.session.jwt, process.env.JWT_KEY!);
-		return res.send({ currentUser: jwtPayload });
-	} catch (error) {
-		return res.send({ currentUser: null });
-	}
-});
+router
+	.route('/currentuser')
+	.get(currentUser, async (req: Request, res: Response) => {
+		return res.send({ currentUser: req.currentUser || null });
+	});
 
 router.route('/signout').post(async (req: Request, res: Response) => {
 	req.session = null;
