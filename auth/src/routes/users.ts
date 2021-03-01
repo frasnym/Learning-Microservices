@@ -3,9 +3,9 @@ import { body } from 'express-validator';
 import jwt from 'jsonwebtoken';
 
 import { BadRequestError } from '../errors/bad-request-error';
-import { NotFoundError } from '../errors/not-found-error';
 import { validateRequest } from '../middlewares/validate-request';
 import { User } from '../models/user';
+import { Password } from '../services/password';
 
 const router = express.Router();
 
@@ -36,7 +36,6 @@ router
 				email: user.email,
 			};
 			const userJwt = jwt.sign(jwtPayload, process.env.JWT_KEY!);
-
 			req.session = { jwt: userJwt };
 
 			return res.status(201).send(user);
@@ -55,25 +54,29 @@ router
 		],
 		validateRequest,
 		async (req: Request, res: Response) => {
-			const { email } = req.body;
+			const { email, password } = req.body;
 
-			const user = await User.findOne({ email });
-			if (!user) {
-				throw new NotFoundError();
+			const existingUser = await User.findOne({ email });
+			if (!existingUser) {
+				throw new BadRequestError('Invalid credentials');
 			}
 
-			// const user = User.build({ email, password });
-			// await user.save();
+			const isPasswordMatch = await Password.compare(
+				existingUser.password,
+				password
+			);
+			if (!isPasswordMatch) {
+				throw new BadRequestError('Invalid credentials');
+			}
 
-			// const jwtPayload = {
-			// 	id: user.id,
-			// 	email: user.email,
-			// };
-			// const userJwt = jwt.sign(jwtPayload, process.env.JWT_KEY!);
+			const jwtPayload = {
+				id: existingUser.id,
+				email: existingUser.email,
+			};
+			const userJwt = jwt.sign(jwtPayload, process.env.JWT_KEY!);
+			req.session = { jwt: userJwt };
 
-			// req.session = { jwt: userJwt };
-
-			return res.status(200).send(user);
+			return res.status(200).send(existingUser);
 		}
 	);
 
