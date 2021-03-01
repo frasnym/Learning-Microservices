@@ -83,4 +83,23 @@ describe('usersRouter - Sign In', () => {
 			})
 			.expect(400);
 	});
+
+	test('should fails when an invalid password is provided', async () => {
+		const validBody = {
+			email: 'test@test.com',
+			password: 'password',
+		};
+		await request(app)
+			.post('/api/users/signup')
+			.send(validBody)
+			.expect(201);
+
+		await request(app)
+			.post('/api/users/signin')
+			.send({
+				email: validBody.email,
+				password: 'invalid_password',
+			})
+			.expect(400);
+	});
 });
