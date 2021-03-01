@@ -144,3 +144,24 @@ describe('usersRouter - Sign Out', () => {
 		);
 	});
 });
+
+describe('usersRouter - CurrentUser', () => {
+	test('should responds with details about current user', async () => {
+		const validBody = {
+			email: 'test@test.com',
+			password: 'password',
+		};
+		const signUpResponse = await request(app)
+			.post('/api/users/signup')
+			.send(validBody)
+			.expect(201);
+
+		const cookie = signUpResponse.get('Set-Cookie');
+
+		const response = await request(app)
+			.get('/api/users/currentuser')
+			.set('Cookie', cookie)
+			.expect(200);
+		expect(response.body.currentUser.email).toBe(validBody.email);
+	});
+});
