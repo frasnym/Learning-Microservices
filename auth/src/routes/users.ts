@@ -93,4 +93,9 @@ router.route('/currentuser').get(async (req: Request, res: Response) => {
 	}
 });
 
+router.route('/signout').post(async (req: Request, res: Response) => {
+	req.session = null;
+	return res.send();
+});
+
 export { router as usersRouter };
