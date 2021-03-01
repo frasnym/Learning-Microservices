@@ -1,27 +1,22 @@
-import React, { useRef, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import useRequest from '../../hooks/use-request';
 
 export default function signup() {
-	const emailInputRef = useRef('');
-	const passwordInputRef = useRef('');
-	const [errors, setErrors] = useState([]);
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+	const { doRequest, errors } = useRequest({
+		url: '/api/users/signup',
+		method: 'post',
+		body: {
+			email,
+			password,
+		},
+	});
 
 	const onSubmit = async (event) => {
 		event.preventDefault();
 
-		const email = emailInputRef.current.value;
-		const password = passwordInputRef.current.value;
-
-		try {
-			const response = await axios.post('/api/users/signup', {
-				email,
-				password,
-			});
-
-			console.log(response.data);
-		} catch (error) {
-			setErrors(error.response.data.errors);
-		}
+		doRequest();
 	};
 
 	return (
@@ -29,26 +24,22 @@ export default function signup() {
 			<h1>Sign Up</h1>
 			<div className="form-group">
 				<label>Email Address</label>
-				<input ref={emailInputRef} className="form-control" />
+				<input
+					value={email}
+					onChange={(e) => setEmail(e.target.value)}
+					className="form-control"
+				/>
 			</div>
 			<div className="form-group">
 				<label>Password</label>
 				<input
-					ref={passwordInputRef}
+					value={password}
+					onChange={(e) => setPassword(e.target.value)}
 					type="password"
 					className="form-control"
 				/>
 			</div>
-			{errors.length > 0 && (
-				<div className="alert alert-danger">
-					<h4>Ops...</h4>
-					<ul className="my-0">
-						{errors.map((e) => (
-							<li key={e.message}>{e.message}</li>
-						))}
-					</ul>
-				</div>
-			)}
+			{errors}
 			<button className="btn btn-primary">Sign Up</button>
 		</form>
 	);
