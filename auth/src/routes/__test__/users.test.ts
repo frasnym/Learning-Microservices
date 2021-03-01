@@ -43,7 +43,7 @@ describe('usersRouter - Sign Up', () => {
 			.expect(400);
 	});
 
-	test('should disallows duplicate emails', async () => {
+	test('should disallows register duplicate emails', async () => {
 		const validBody = {
 			email: 'test@test.com',
 			password: 'password',
@@ -57,5 +57,18 @@ describe('usersRouter - Sign Up', () => {
 			.post('/api/users/signup')
 			.send(validBody)
 			.expect(400);
+	});
+
+	test('should sets a cookie after successful signup', async () => {
+		const validBody = {
+			email: 'test@test.com',
+			password: 'password',
+		};
+		const response = await request(app)
+			.post('/api/users/signup')
+			.send(validBody)
+			.expect(201);
+
+		expect(response.get('Set-Cookie')).toBeDefined();
 	});
 });
