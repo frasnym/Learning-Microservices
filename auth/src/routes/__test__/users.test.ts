@@ -121,3 +121,26 @@ describe('usersRouter - Sign In', () => {
 		expect(response.get('Set-Cookie')).toBeDefined();
 	});
 });
+
+describe('usersRouter - Sign Out', () => {
+	test('should clear the cookie after sign-out', async () => {
+		const validBody = {
+			email: 'test@test.com',
+			password: 'password',
+		};
+		await request(app)
+			.post('/api/users/signup')
+			.send(validBody)
+			.expect(201);
+
+		const response = await request(app)
+			.post('/api/users/signout')
+			.send({})
+			.expect(200);
+
+		expect(response.get('Set-Cookie')).toBeDefined();
+		expect(response.get('Set-Cookie')[0]).toEqual(
+			'express:sess=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; httponly'
+		);
+	});
+});
