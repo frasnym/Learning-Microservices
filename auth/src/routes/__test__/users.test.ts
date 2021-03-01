@@ -42,4 +42,20 @@ describe('usersRouter - Sign Up', () => {
 			.send({ password: 'password' })
 			.expect(400);
 	});
+
+	test('should disallows duplicate emails', async () => {
+		const validBody = {
+			email: 'test@test.com',
+			password: 'password',
+		};
+		await request(app)
+			.post('/api/users/signup')
+			.send(validBody)
+			.expect(201);
+
+		await request(app)
+			.post('/api/users/signup')
+			.send(validBody)
+			.expect(400);
+	});
 });
