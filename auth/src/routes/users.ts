@@ -37,7 +37,7 @@ router
 				id: user.id,
 				email: user.email,
 			};
-			const userJwt = jwt.sign(jwtPayload, 'asdf');
+			const userJwt = jwt.sign(jwtPayload, process.env.JWT_KEY!);
 
 			req.session = { jwt: userJwt };
 
