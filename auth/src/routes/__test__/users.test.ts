@@ -72,3 +72,15 @@ describe('usersRouter - Sign Up', () => {
 		expect(response.get('Set-Cookie')).toBeDefined();
 	});
 });
+
+describe('usersRouter - Sign In', () => {
+	test('should fails when an invalid email is provided', async () => {
+		await request(app)
+			.post('/api/users/signin')
+			.send({
+				email: 'invalid_email',
+				password: 'password',
+			})
+			.expect(400);
+	});
+});
