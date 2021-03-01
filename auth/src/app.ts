@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(
 	cookieSession({
 		signed: false, // disable encryption
-		secure: true, // enable only on https connection
+		secure: process.env.NODE_ENV !== 'test', // enable only on https connection on "Production" or "Development"
 	})
 );
 
