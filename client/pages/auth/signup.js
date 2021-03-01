@@ -1,16 +1,22 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
+import axios from 'axios';
 
 export default function signup() {
 	const emailInputRef = useRef('');
 	const passwordInputRef = useRef('');
 
-	const onSubmit = (event) => {
+	const onSubmit = async (event) => {
 		event.preventDefault();
 
-		console.log(
-			emailInputRef.current.value,
-			passwordInputRef.current.value
-		);
+		const email = emailInputRef.current.value;
+		const password = passwordInputRef.current.value;
+
+		const response = await axios.post('/api/users/signup', {
+			email,
+			password,
+		});
+
+		console.log(response.data);
 	};
 
 	return (
