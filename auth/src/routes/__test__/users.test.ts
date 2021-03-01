@@ -21,4 +21,14 @@ describe('usersRouter - Sign Up', () => {
 			})
 			.expect(400);
 	});
+
+	test('should returns 400 with if invalid password provided', async () => {
+		return request(app)
+			.post('/api/users/signup')
+			.send({
+				email: 'test@test.com',
+				password: 'p',
+			})
+			.expect(400);
+	});
 });
