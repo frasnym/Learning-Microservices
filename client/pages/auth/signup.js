@@ -13,15 +13,13 @@ export default function signup() {
 			email,
 			password,
 		},
+		onSuccess: () => router.push('/'),
 	});
 
 	const onSubmit = async (event) => {
 		event.preventDefault();
 
 		await doRequest();
-		if (errors) {
-			router.push('/');
-		}
 	};
 
 	return (
