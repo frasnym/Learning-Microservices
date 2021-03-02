@@ -6,11 +6,14 @@
 
 -   Docker
 -   Kubernetes
--   Skaffold
+-   Skaffold: [How to install](https://skaffold.dev/docs/install/)
 
 ## Features
 
 -   [Error Handler Middleware](./auth/src/middlewares/error-handler.ts)
+-   [Kubernetes Deployment](./infra/k8s)
+-   [Skaffold Continues Deployment](./skaffold.yaml)
+-   [Jest Testing](./auth/src/test/setup.ts)
 
 ## How to start
 
