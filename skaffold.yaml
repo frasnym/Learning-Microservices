@@ -1,4 +1,4 @@
-# TODO Someting skaffold didn't restart
+# TODO Someting skaffold didn't restart node. ex: auth
 apiVersion: skaffold/v2alpha3
 kind: config
 deploy:
