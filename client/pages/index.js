@@ -1,35 +1,15 @@
 import React from 'react';
-import axios from 'axios';
+import buildClient from '../api/build-client';
 
 const LandingPage = ({ currentUser }) => {
 	console.log({ currentUser });
 	return <h1>Landing</h1>;
 };
 
-LandingPage.getInitialProps = async ({ req }) => {
-	if (typeof window === 'undefined') {
-		/**
-		 * We are on the server!
-		 * Request should be made with base url of http://SERVICENAME.NAMESPACE.svc.cluster.local
-		 * How to get:
-		 * 1. kubectl get namespace
-		 * 2. kubectl get services -n [SERVICE_NAME]
-		 */
-		const { data } = await axios.get(
-			'http://ingress-nginx-controller.ingress-nginx.svc.cluster.local/api/users/currentuser',
-			{
-				headers: req.headers,
-			}
-		);
-		return data;
-	} else {
-		/**
-		 * We are on the browser!
-		 * Request can be made with a base url or ''
-		 */
-		const { data } = await axios.get('/api/users/currentuser');
-		return data;
-	}
+LandingPage.getInitialProps = async (context) => {
+	const client = buildClient(context);
+	const { data } = await client.get('/api/users/currentuser');
+	return data;
 };
 
 export default LandingPage;
