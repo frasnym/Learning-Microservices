@@ -12,7 +12,13 @@ describe('New Routes', () => {
 		expect(response.status).toBe(401);
 	});
 
-	test.todo('should return status other that 401 if user is signed in');
+	test('should return status other that 401 if user is signed in', async () => {
+		const response = await request(app)
+			.post('/api/tickets')
+			.set('Cookie', global.signin())
+			.send({});
+		expect(response.status).not.toBe(401);
+	});
 
 	test.todo('should returns an error if an invalid title is provided');
 
