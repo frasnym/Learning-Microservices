@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tickets-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tickets  # Tell deployment what pod to use
+  template:
+    metadata:
+      labels:
+        app: tickets  # Label of the pod
+    spec:
+      containers:
+      - name: tickets
+        image: frasnym/tickets
+        env:
+        - name: JWT_KEY
+          valueFrom:
+            secretKeyRef:
+              name: jwt-secret
+              key: JWT_KEY
+        # resources:
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "500m"
+        # ports:
+        # - containerPort: <Port>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tickets-srv
+spec:
+  selector:
+    app: tickets # Tell which pod to given access to
+  ports:
+  - name: tickets
+    protocol: TCP
+    port: 3000
+    targetPort: 3000
+
