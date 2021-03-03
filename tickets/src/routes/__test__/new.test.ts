@@ -31,25 +31,24 @@ describe('New Routes', () => {
 		expect(response.status).toBe(400);
 	});
 
-	test.todo('should returns an error if an invalid price is provided');
-	// test('should returns an error if an invalid price is provided', async () => {
-	// 	await request(app)
-	// 		.post('/api/tickets')
-	// 		.set('Cookie', global.signin())
-	// 		.send({
-	// 			title: 'valid_title',
-	// 			price: -10,
-	// 		})
-	// 		.expect(400);
+	test('should returns an error if an invalid price is provided', async () => {
+		await request(app)
+			.post('/api/tickets')
+			.set('Cookie', global.signin())
+			.send({
+				title: 'valid_title',
+				price: -10,
+			})
+			.expect(400);
 
-	// 	await request(app)
-	// 		.post('/api/tickets')
-	// 		.set('Cookie', global.signin())
-	// 		.send({
-	// 			title: 'valid_title',
-	// 		})
-	// 		.expect(400);
-	// });
+		await request(app)
+			.post('/api/tickets')
+			.set('Cookie', global.signin())
+			.send({
+				title: 'valid_title',
+			})
+			.expect(400);
+	});
 
 	test.todo('should successfully create a ticket with valid input provided');
 });
