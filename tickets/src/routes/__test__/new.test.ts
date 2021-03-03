@@ -50,5 +50,16 @@ describe('New Routes', () => {
 			.expect(400);
 	});
 
-	test.todo('should successfully create a ticket with valid input provided');
+	test('should successfully create a ticket with valid input provided', async () => {
+		// TODO: Add in a check to make sure ticket was created
+
+		await request(app)
+			.post('/api/tickets')
+			.set('Cookie', global.signin())
+			.send({
+				title: 'valid_title',
+				price: 20,
+			})
+			.expect(201);
+	});
 });

@@ -15,7 +15,7 @@ router.post(
 	],
 	validateRequest,
 	(_req: Request, res: Response) => {
-		return res.sendStatus(200);
+		return res.sendStatus(201);
 	}
 );
 
