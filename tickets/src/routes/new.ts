@@ -1,6 +1,7 @@
 import { requireAuth, validateRequest } from '@frntickets/common';
 import { Request, Response, Router } from 'express';
 import { body } from 'express-validator';
+import { Ticket } from '../models/ticket';
 
 const router = Router();
 
@@ -14,8 +15,17 @@ router.post(
 			.withMessage('Price must be grater than 0'),
 	],
 	validateRequest,
-	(_req: Request, res: Response) => {
-		return res.sendStatus(201);
+	async (req: Request, res: Response) => {
+		const { title, price } = req.body;
+
+		const ticket = Ticket.build({
+			title,
+			price,
+			userId: req.currentUser!.id,
+		});
+		await ticket.save();
+
+		return res.status(201).send(ticket);
 	}
 );
 
