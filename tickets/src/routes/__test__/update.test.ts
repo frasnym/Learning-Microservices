@@ -16,8 +16,35 @@ describe('Update route', () => {
 			})
 			.expect(404);
 	});
-	test.todo('should a 401 if the user is not authenticated');
-	test.todo("should a 401 if the user doesn't own the ticket");
-	test.todo('should a 400 if invalid title or price provided');
+
+	test('should returns a 401 if the user is not authenticated', async () => {
+		const id = new mongoose.Types.ObjectId().toHexString();
+
+		await request(app)
+			.put(`/api/tickets/${id}`)
+			.send({
+				title: 'valid_title',
+				price: 20,
+			})
+			.expect(401);
+	});
+
+	test("should returns a 401 if the user doesn't own the ticket", async () => {
+		const response = await request(app)
+			.post('/api/tickets')
+			.set('Cookie', global.signin())
+			.send({ title: 'valid_title', price: 20 });
+
+		await request(app)
+			.put(`/api/tickets/${response.body.id}`)
+			.set('Cookie', global.signin())
+			.send({
+				title: 'another_title',
+				price: 1000,
+			})
+			.expect(401);
+	});
+
+	test.todo('should returns a 400 if invalid title or price provided');
 	test.todo('should updates the ticket with valid value provided');
 });
