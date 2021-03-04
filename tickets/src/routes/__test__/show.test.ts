@@ -1,9 +1,10 @@
 import request from 'supertest';
+import mongoose from 'mongoose';
 import { app } from '../../app';
 
 describe('Show routes', () => {
 	test('should returns a 404 if the ticket is not found', async () => {
-		const invalidId = 'invalid_id';
+		const invalidId = new mongoose.Types.ObjectId().toHexString();
 		await request(app).get(`/api/tickets/${invalidId}`).expect(404);
 	});
 
