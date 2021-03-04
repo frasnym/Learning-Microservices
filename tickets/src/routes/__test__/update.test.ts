@@ -45,6 +45,37 @@ describe('Update route', () => {
 			.expect(401);
 	});
 
-	test.todo('should returns a 400 if invalid title or price provided');
+	test('should returns a 400 if invalid title or price provided', async () => {
+		const cookie = global.signin();
+
+		const validTitle = 'valid_title';
+		const invalidTitle = '';
+		const validPrice = 20;
+		const invalidPrice = -20;
+
+		const response = await request(app)
+			.post('/api/tickets')
+			.set('Cookie', cookie)
+			.send({ title: validTitle, price: validPrice });
+
+		await request(app)
+			.put(`/api/tickets/${response.body.id}`)
+			.set('Cookie', cookie)
+			.send({
+				title: invalidTitle,
+				price: validPrice,
+			})
+			.expect(400);
+
+		await request(app)
+			.put(`/api/tickets/${response.body.id}`)
+			.set('Cookie', cookie)
+			.send({
+				title: validTitle,
+				price: invalidPrice,
+			})
+			.expect(400);
+	});
+
 	test.todo('should updates the ticket with valid value provided');
 });
