@@ -25,12 +25,17 @@ router.put(
 		if (!ticket) {
 			throw new NotFoundError();
 		}
-
 		if (ticket.userId !== req.currentUser?.id) {
 			throw new NotAuthorizedError();
 		}
 
-		return res.send();
+		ticket.set({
+			title: req.body.title,
+			price: req.body.price,
+		});
+		await ticket.save();
+
+		return res.send(ticket);
 	}
 );
 

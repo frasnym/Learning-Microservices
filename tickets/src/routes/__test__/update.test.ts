@@ -56,7 +56,8 @@ describe('Update route', () => {
 		const response = await request(app)
 			.post('/api/tickets')
 			.set('Cookie', cookie)
-			.send({ title: validTitle, price: validPrice });
+			.send({ title: validTitle, price: validPrice })
+			.expect(201);
 
 		await request(app)
 			.put(`/api/tickets/${response.body.id}`)
@@ -77,5 +78,32 @@ describe('Update route', () => {
 			.expect(400);
 	});
 
-	test.todo('should updates the ticket with valid value provided');
+	test('should updates the ticket with valid value provided', async () => {
+		const cookie = global.signin();
+
+		const validTitle = 'another_valid_title';
+		const validPrice = 30;
+
+		const response = await request(app)
+			.post('/api/tickets')
+			.set('Cookie', cookie)
+			.send({ title: 'valid_title', price: 20 })
+			.expect(201);
+
+		await request(app)
+			.put(`/api/tickets/${response.body.id}`)
+			.set('Cookie', cookie)
+			.send({
+				title: validTitle,
+				price: validPrice,
+			})
+			.expect(200);
+
+		const ticketResponse = await request(app)
+			.get(`/api/tickets/${response.body.id}`)
+			.expect(200);
+
+		expect(ticketResponse.body.title).toBe(validTitle);
+		expect(ticketResponse.body.price).toBe(validPrice);
+	});
 });
