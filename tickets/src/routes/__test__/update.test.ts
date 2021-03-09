@@ -2,6 +2,7 @@ import request from 'supertest';
 import { app } from '../../app';
 
 import mongoose from 'mongoose';
+import { natsWrapper } from '../../nats-wrapper';
 
 describe('Update route', () => {
 	test('should returns a 404 if the provided id does not exist', async () => {
@@ -105,5 +106,29 @@ describe('Update route', () => {
 
 		expect(ticketResponse.body.title).toBe(validTitle);
 		expect(ticketResponse.body.price).toBe(validPrice);
+	});
+
+	test('should published an event', async () => {
+		const cookie = global.signin();
+
+		const validTitle = 'another_valid_title';
+		const validPrice = 30;
+
+		const response = await request(app)
+			.post('/api/tickets')
+			.set('Cookie', cookie)
+			.send({ title: 'valid_title', price: 20 })
+			.expect(201);
+
+		await request(app)
+			.put(`/api/tickets/${response.body.id}`)
+			.set('Cookie', cookie)
+			.send({
+				title: validTitle,
+				price: validPrice,
+			})
+			.expect(200);
+
+		expect(natsWrapper.client.publish).toHaveBeenCalled();
 	});
 });
