@@ -26,4 +26,25 @@ describe('Show Order Route', () => {
 
 		expect(fetchedOrder.id).toBe(order.id);
 	});
+
+	test('should returns not authorized error if invalid user try to access coresponding order', async () => {
+		const ticket = Ticket.build({
+			title: 'concert',
+			price: 20,
+		});
+		await ticket.save();
+
+		const { body: order } = await request(app)
+			.post('/api/orders')
+			.set('Cookie', global.signin())
+			.send({
+				ticketId: ticket.id,
+			})
+			.expect(201);
+
+		await request(app)
+			.get(`/api/orders/${order.id}`)
+			.set('Cookie', global.signin())
+			.expect(401);
+	});
 });
