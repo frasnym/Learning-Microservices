@@ -41,5 +41,19 @@ describe('Order New Routes', () => {
 			.expect(400);
 	});
 
-	test.todo('should sucessfully reserved a ticket');
+	test('should sucessfully reserves a ticket', async () => {
+		const ticket = Ticket.build({
+			title: 'concert',
+			price: 20,
+		});
+		await ticket.save();
+
+		await request(app)
+			.post('/api/orders')
+			.set('Cookie', global.signin())
+			.send({
+				ticketId: ticket.id,
+			})
+			.expect(201);
+	});
 });
