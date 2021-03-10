@@ -56,4 +56,6 @@ describe('Order New Routes', () => {
 			})
 			.expect(201);
 	});
+
+	test.todo('should emits an order created event');
 });
