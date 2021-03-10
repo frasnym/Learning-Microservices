@@ -17,12 +17,14 @@ router.delete(
 		if (!order) {
 			throw new NotFoundError();
 		}
-		if (order.id !== req.currentUser?.id) {
+		if (order.userId !== req.currentUser!.id) {
 			throw new NotAuthorizedError();
 		}
 
 		order.status = OrderStatus.Cancelled;
 		await order.save();
+
+		// TODO: Publish an event saying that order was cancelled
 
 		res.status(204).send(order);
 	}

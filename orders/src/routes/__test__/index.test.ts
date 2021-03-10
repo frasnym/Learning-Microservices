@@ -45,8 +45,6 @@ describe('Orders Index Route', () => {
 			.set('Cookie', userTwo)
 			.expect(200);
 
-		console.log(response.body);
-
 		expect(response.body.length).toBe(2);
 		expect(response.body[0].id).toBe(orderOne.id);
 		expect(response.body[1].id).toBe(orderTwo.id);
