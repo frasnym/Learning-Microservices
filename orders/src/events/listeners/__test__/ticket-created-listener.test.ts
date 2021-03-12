@@ -27,9 +27,10 @@ const setup = async () => {
 describe('Ticket Created Listener', () => {
 	test('should creates and saves a ticket', async () => {
 		const { listener, data, msg } = await setup();
-		listener.onMessage(data, msg);
+		await listener.onMessage(data, msg);
 
 		const ticket = await Ticket.findById(data.id);
+
 		expect(ticket).toBeDefined();
 		expect(ticket!.title).toBe(data.title);
 		expect(ticket!.price).toBe(data.price);
