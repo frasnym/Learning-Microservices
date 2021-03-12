@@ -1,14 +1,22 @@
+import mongoose from 'mongoose';
 import request from 'supertest';
 import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
 
+const buildTicket = async () => {
+	const ticket = Ticket.build({
+		id: mongoose.Types.ObjectId().toHexString(),
+		title: 'concert',
+		price: 20,
+	});
+	await ticket.save();
+
+	return ticket;
+};
+
 describe('Show Order Route', () => {
 	test('should fetches the order', async () => {
-		const ticket = Ticket.build({
-			title: 'concert',
-			price: 20,
-		});
-		await ticket.save();
+		const ticket = await buildTicket();
 
 		const user = global.signin();
 		const { body: order } = await request(app)
@@ -28,11 +36,7 @@ describe('Show Order Route', () => {
 	});
 
 	test('should returns not authorized error if invalid user try to access coresponding order', async () => {
-		const ticket = Ticket.build({
-			title: 'concert',
-			price: 20,
-		});
-		await ticket.save();
+		const ticket = await buildTicket();
 
 		const { body: order } = await request(app)
 			.post('/api/orders')
