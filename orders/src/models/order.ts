@@ -11,6 +11,7 @@ interface OrderAttrs {
 
 interface OrderDoc extends mongoose.Document {
 	userId: string;
+	version: number;
 	status: OrderStatus;
 	expiresAt: Date;
 	ticket: TicketDoc;
@@ -49,6 +50,15 @@ const orderSchema = new mongoose.Schema(
 		},
 	}
 );
+
+orderSchema.set('versionKey', 'version');
+orderSchema.pre('save', function (done) {
+	this.$where = {
+		version: this.get('version') - 1,
+	};
+
+	done();
+});
 
 orderSchema.statics.build = (attrs: OrderAttrs) => {
 	return new Order(attrs);
