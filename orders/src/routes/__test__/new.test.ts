@@ -3,6 +3,7 @@ import request from 'supertest';
 import { app } from '../../app';
 import { Order, OrderStatus } from '../../models/order';
 import { Ticket } from '../../models/ticket';
+import { natsWrapper } from '../../nats-wrapper';
 
 describe('Order New Routes', () => {
 	test('should returns not found error if the ticket does not exist', async () => {
@@ -51,11 +52,23 @@ describe('Order New Routes', () => {
 		await request(app)
 			.post('/api/orders')
 			.set('Cookie', global.signin())
-			.send({
-				ticketId: ticket.id,
-			})
+			.send({ ticketId: ticket.id })
 			.expect(201);
 	});
 
-	test.todo('should emits an order created event');
+	test('should emits an order created event', async () => {
+		const ticket = Ticket.build({
+			title: 'concert',
+			price: 20,
+		});
+		await ticket.save();
+
+		await request(app)
+			.post('/api/orders')
+			.set('Cookie', global.signin())
+			.send({ ticketId: ticket.id })
+			.expect(201);
+
+		expect(natsWrapper.client.publish).toHaveBeenCalled();
+	});
 });
