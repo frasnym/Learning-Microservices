@@ -48,4 +48,12 @@ describe('Ticket Updated Listener', () => {
 
 		expect(msg.ack).toHaveBeenCalled();
 	});
+
+	test('should not call ack if the event has a skipped version number', async () => {
+		const { listener, data, msg } = await setup();
+		data.version = 10;
+		await listener.onMessage(data, msg);
+
+		expect(msg.ack).not.toHaveBeenCalled();
+	});
 });
