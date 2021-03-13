@@ -42,5 +42,10 @@ describe('Ticket Updated Listener', () => {
 		expect(updatedTicket!.version).toBe(data.version);
 	});
 
-	test.todo('acks the message');
+	test('should acks the message', async () => {
+		const { listener, data, msg } = await setup();
+		await listener.onMessage(data, msg);
+
+		expect(msg.ack).toHaveBeenCalled();
+	});
 });
