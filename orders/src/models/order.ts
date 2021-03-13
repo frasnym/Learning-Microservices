@@ -1,5 +1,6 @@
 import { OrderStatus } from '@frntickets/common';
 import mongoose from 'mongoose';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { TicketDoc } from './ticket';
 
 interface OrderAttrs {
@@ -52,13 +53,7 @@ const orderSchema = new mongoose.Schema(
 );
 
 orderSchema.set('versionKey', 'version');
-orderSchema.pre('save', function (done) {
-	this.$where = {
-		version: this.get('version') > 0 ? this.get('version') - 1 : 0,
-	};
-
-	done();
-});
+orderSchema.plugin(updateIfCurrentPlugin);
 
 orderSchema.statics.build = (attrs: OrderAttrs) => {
 	return new Order(attrs);
