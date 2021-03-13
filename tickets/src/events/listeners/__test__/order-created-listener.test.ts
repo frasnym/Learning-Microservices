@@ -45,5 +45,10 @@ describe('Order Created Listener', () => {
 		expect(updatedTicket!.orderId).toBe(data.id);
 	});
 
-	test.todo('acks the message');
+	test('should acks the message', async () => {
+		const { listener, data, msg } = await setup();
+		await listener.onMessage(data, msg);
+
+		expect(msg.ack).toHaveBeenCalled();
+	});
 });
