@@ -36,4 +36,15 @@ const setup = async () => {
 	return { listener, ticket, order, data, msg };
 };
 
-describe('Expiration Complete Listener', () => {});
+describe('Expiration Complete Listener', () => {
+	test('should updates the order status to cancelled', async () => {
+		const { listener, order, data, msg } = await setup();
+		await listener.onMessage(data, msg);
+
+		const updatedOrder = await Order.findById(order.id);
+		expect(updatedOrder?.status).toBe(OrderStatus.Cancelled);
+	});
+
+	test.todo('emit an order:cancelled event');
+	test.todo('ack the message');
+});
