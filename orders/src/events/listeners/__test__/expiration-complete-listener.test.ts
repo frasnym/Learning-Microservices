@@ -57,5 +57,10 @@ describe('Expiration Complete Listener', () => {
 		expect(eventData.id).toBe(order.id);
 	});
 
-	test.todo('ack the message');
+	test('should ack the message', async () => {
+		const { listener, data, msg } = await setup();
+		await listener.onMessage(data, msg);
+
+		expect(msg.ack).toHaveBeenCalled();
+	});
 });
