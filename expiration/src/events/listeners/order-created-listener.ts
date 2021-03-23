@@ -1,5 +1,6 @@
 import { Listener, OrderCreatedEvent, Subjects } from '@frntickets/common';
 import { Message } from 'node-nats-streaming';
+import { expirationQueue } from '../../queues/expiration-queue';
 import { queueGroupName } from './queue-group-name';
 
 export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
@@ -7,6 +8,9 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
 	queueGroupName = queueGroupName;
 
 	async onMessage(data: OrderCreatedEvent['data'], msg: Message) {
-		return;
+		await expirationQueue.add({
+			orderId: data.id,
+		});
+		msg.ack();
 	}
 }
