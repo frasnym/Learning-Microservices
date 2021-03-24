@@ -3,6 +3,7 @@ import 'express-async-errors';
 import cookieSession from 'cookie-session';
 
 import { NotFoundError, errorHandler, currentUser } from '@frntickets/common';
+import { createChargeRouter } from './routes/new';
 
 const app = express();
 app.set('trust proxy', true); // trust connection from ingress
@@ -14,6 +15,7 @@ app.use(
 	})
 );
 app.use(currentUser);
+app.use(createChargeRouter);
 
 app.all('*', async () => {
 	throw new NotFoundError();
